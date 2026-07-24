@@ -61,6 +61,55 @@ app.get('/api/capturas', (req, res) => {
 // Servir las imagenes guardadas como estaticos
 app.use('/capturas', express.static(CAPTURES_DIR));
 
+// Ruta para eliminar UNA captura especifica por nombre de archivo
+app.delete('/api/capturas/:archivo', (req, res) => {
+  const { archivo } = req.params;
+
+  // Evita "path traversal" (que intenten borrar fuera de la carpeta capturas)
+  if (archivo.includes('..') || archivo.includes('/') || archivo.includes('\\')) {
+    return res.status(400).json({ ok: false, error: 'Nombre de archivo invalido' });
+  }
+
+  const rutaArchivo = path.join(CAPTURES_DIR, archivo);
+
+  fs.unlink(rutaArchivo, (err) => {
+    if (err) {
+      if (err.code === 'ENOENT') {
+        return res.status(404).json({ ok: false, error: 'La captura no existe' });
+      }
+      console.error('Error al eliminar la captura:', err);
+      return res.status(500).json({ ok: false, error: 'Error al eliminar la captura' });
+    }
+    console.log(`Captura eliminada: ${archivo}`);
+    res.json({ ok: true, archivo });
+  });
+});
+
+// Ruta para eliminar TODAS las capturas de una vez
+app.delete('/api/capturas', (req, res) => {
+  fs.readdir(CAPTURES_DIR, (err, archivos) => {
+    if (err) return res.status(500).json({ ok: false, error: 'No se pudo leer la carpeta' });
+
+    if (archivos.length === 0) {
+      return res.json({ ok: true, eliminadas: 0 });
+    }
+
+    let pendientes = archivos.length;
+    let errores = 0;
+
+    archivos.forEach((archivo) => {
+      fs.unlink(path.join(CAPTURES_DIR, archivo), (err) => {
+        if (err) errores++;
+        pendientes--;
+        if (pendientes === 0) {
+          console.log(`Se eliminaron ${archivos.length - errores} capturas`);
+          res.json({ ok: true, eliminadas: archivos.length - errores, errores });
+        }
+      });
+    });
+  });
+});
+
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en http://localhost:${PORT}`);
 });

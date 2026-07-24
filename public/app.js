@@ -13,6 +13,7 @@ const inputSensibilidad = document.getElementById('sensibilidad');
 const valorSensibilidad = document.getElementById('valorSensibilidad');
 const estadoDiv = document.getElementById('estado');
 const galeria = document.getElementById('galeria');
+const btnBorrarTodas = document.getElementById('btnBorrarTodas');
 
 let stream = null;
 let intervalo = null;
@@ -35,6 +36,7 @@ inputSensibilidad.addEventListener('input', () => {
 
 btnIniciar.addEventListener('click', iniciarDeteccion);
 btnDetener.addEventListener('click', detenerDeteccion);
+btnBorrarTodas.addEventListener('click', borrarTodasLasCapturas);
 
 async function iniciarDeteccion() {
   try {
@@ -153,12 +155,65 @@ function cargarGaleria() {
     .then((data) => {
       if (!data.ok) return;
       galeria.innerHTML = '';
+
+      if (data.capturas.length === 0) {
+        galeria.innerHTML = '<p class="galeria-vacia">Todavía no hay capturas.</p>';
+        return;
+      }
+
       data.capturas.slice(0, 12).forEach((archivo) => {
+        const tarjeta = document.createElement('div');
+        tarjeta.className = 'tarjeta-captura';
+
         const img = document.createElement('img');
         img.src = '/capturas/' + archivo;
-        galeria.appendChild(img);
+        tarjeta.appendChild(img);
+
+        const btnBorrar = document.createElement('button');
+        btnBorrar.className = 'btn-borrar-captura';
+        btnBorrar.textContent = '✕';
+        btnBorrar.title = 'Eliminar esta captura';
+        btnBorrar.addEventListener('click', () => borrarCaptura(archivo));
+        tarjeta.appendChild(btnBorrar);
+
+        galeria.appendChild(tarjeta);
       });
     });
+}
+
+// Elimina una captura individual por su nombre de archivo
+function borrarCaptura(archivo) {
+  fetch('/api/capturas/' + encodeURIComponent(archivo), {
+    method: 'DELETE',
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      if (data.ok) {
+        cargarGaleria();
+      } else {
+        alert('No se pudo eliminar la captura: ' + (data.error || 'error desconocido'));
+      }
+    })
+    .catch((err) => console.error('Error al eliminar captura:', err));
+}
+
+// Elimina todas las capturas guardadas (pide confirmacion antes)
+function borrarTodasLasCapturas() {
+  const confirmar = confirm('¿Seguro que quieres eliminar TODAS las capturas? Esta acción no se puede deshacer.');
+  if (!confirmar) return;
+
+  fetch('/api/capturas', {
+    method: 'DELETE',
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      if (data.ok) {
+        cargarGaleria();
+      } else {
+        alert('No se pudieron eliminar las capturas: ' + (data.error || 'error desconocido'));
+      }
+    })
+    .catch((err) => console.error('Error al eliminar todas las capturas:', err));
 }
 
 // Cargar galeria al abrir la pagina

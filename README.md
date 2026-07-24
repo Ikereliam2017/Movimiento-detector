@@ -14,6 +14,9 @@ del navegador y un servidor Node.js (Express).
    en base64) al servidor Node.js mediante `POST /api/captura`.
 5. El servidor guarda la imagen en la carpeta `capturas/` y la muestra en la
    galería de la página.
+6. Desde la galería puedes eliminar una captura individual con el botón
+   **✕** en cada imagen, o borrar todas de golpe con el botón
+   **"🗑 Borrar todas"** (pide confirmación antes de borrar).
 
 ## Estructura del proyecto
 
@@ -47,6 +50,15 @@ detector-movimiento/
 6. Haz clic en **"Iniciar cámara"**, acepta el permiso de cámara y mueve
    algo frente a ella. Verás el estado cambiar a "¡Movimiento detectado!" y
    las capturas aparecerán en la galería.
+
+## Rutas de la API
+
+| Método | Ruta                     | Descripción                              |
+|--------|--------------------------|-------------------------------------------|
+| POST   | `/api/captura`           | Guarda una nueva captura (imagen base64)  |
+| GET    | `/api/capturas`          | Lista todas las capturas guardadas        |
+| DELETE | `/api/capturas/:archivo` | Elimina UNA captura por nombre de archivo |
+| DELETE | `/api/capturas`          | Elimina TODAS las capturas                |
 
 ## Ajustes
 

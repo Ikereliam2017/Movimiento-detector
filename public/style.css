@@ -88,14 +88,65 @@ button:disabled {
   color: #ff8080;
 }
 
+.encabezado-galeria {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.encabezado-galeria h2 {
+  margin: 0;
+}
+
+.btn-peligro {
+  background: #b8342f;
+}
+
+.btn-peligro:hover:not(:disabled) {
+  background: #932822;
+}
+
 .galeria {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
   gap: 10px;
 }
 
-.galeria img {
-  width: 100%;
+.tarjeta-captura {
+  position: relative;
   border-radius: 6px;
+  overflow: hidden;
   border: 1px solid #2a2e3d;
+}
+
+.tarjeta-captura img {
+  width: 100%;
+  display: block;
+}
+
+.btn-borrar-captura {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  background: rgba(184, 52, 47, 0.9);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  width: 26px;
+  height: 26px;
+  line-height: 1;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 0;
+}
+
+.btn-borrar-captura:hover {
+  background: #932822;
+}
+
+.galeria-vacia {
+  color: #9aa0b4;
+  font-style: italic;
 }
