@@ -1,0 +1,12 @@
+{
+  "name": "detector-movimiento",
+  "version": "1.0.0",
+  "description": "Detector de movimiento usando Node.js, Express y la camara web del navegador",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}

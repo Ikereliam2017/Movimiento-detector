@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Detector de Movimiento - Node.js</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="contenedor">
+    <h1>🎥 Detector de Movimiento</h1>
+    <p class="subtitulo">Proyecto con Node.js + Express + JavaScript en el navegador</p>
+
+    <div class="panel-video">
+      <video id="video" autoplay muted playsinline></video>
+      <canvas id="canvasCaptura" style="display:none;"></canvas>
+      <canvas id="canvasDiferencia" style="display:none;"></canvas>
+    </div>
+
+    <div class="controles">
+      <button id="btnIniciar">Iniciar cámara</button>
+      <button id="btnDetener" disabled>Detener</button>
+      <label>
+        Sensibilidad:
+        <input type="range" id="sensibilidad" min="5" max="100" value="30">
+        <span id="valorSensibilidad">30</span>
+      </label>
+    </div>
+
+    <div id="estado" class="estado estado-inactivo">Cámara apagada</div>
+
+    <h2>Capturas guardadas</h2>
+    <div id="galeria" class="galeria"></div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
